@@ -1,0 +1,31 @@
+<html>
+    <head>
+        <title>Welcome to WordSolver</title>
+    </head>
+<body>
+
+<h1>Welcome to WordSolver</h1>
+
+<h2>Enter a word</h2>
+<p>Represent unknown letters with '?', for example: '?ye'</p>
+<form action="/" method="POST">
+    The target word: <input type="text" name="target">
+    <br/>
+    <!-- The clue words: <input type="text" name="clue">
+    <br/> -->
+    <input type="submit">
+</form>
+
+<h2>Results</h2>
+<p> for target word: {{ target }} </p>
+<!-- <p> With clue words: {{ clue }} </p> -->
+<p> possible matches are:</p>
+<ul>
+{% for result in results %}
+  <li> {{ result }} </li>
+{% endfor %}
+</ul>
+
+
+</body>
+</html>

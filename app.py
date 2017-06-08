@@ -17,3 +17,7 @@ def index():
         return render_template('index.html', target='', clue='', results=[])
 
 app.secret_key = 'test'
+
+
+if __name__ == '__main__':
+    app.run()

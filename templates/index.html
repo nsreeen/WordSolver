@@ -11,21 +11,26 @@
 <form action="/" method="POST">
     The target word: <input type="text" name="target">
     <br/>
-    <!-- The clue words: <input type="text" name="clue">
-    <br/> -->
+    The clue: <input type="text" name="clue">
+    <br/>
     <input type="submit">
 </form>
 
-<h2>Results</h2>
-<p> for target word: {{ target }} </p>
-<!-- <p> With clue words: {{ clue }} </p> -->
-<p> possible matches are:</p>
+<h2>Results for {{ target }} </h2>
+
+<h3>Best matches:</h3>
 <ul>
-{% for result in results %}
-  <li> {{ result }} </li>
+{% for word in good_matches %}
+  <li><b> {{ word }} </b> <br> {{ matches_and_meanings[word] }} </li>
 {% endfor %}
 </ul>
 
+<h3>Other matches:</h3>
+<ul>
+{% for word in matches_and_meanings.keys() if word not in good_matches %}
+  <li><b> {{ word }} </b> <br> {{ matches_and_meanings[word] }} </li>
+{% endfor %}
+</ul>
 
 </body>
 </html>

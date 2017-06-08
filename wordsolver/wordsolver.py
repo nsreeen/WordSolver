@@ -42,18 +42,18 @@ def get_meanings(matches):
         if meaning == None:
             meaning = get_wictionary_meaning(word)
 
-        meaning = clean(meaning)
+        #meaning = clean(meaning)
         matches_and_meanings[word] = meaning
 
     return matches_and_meanings
 
 
 def clean(text):
-    #remove html tags
-    text = re.sub('<.+?>', '', text)
     #remove double line breaks
     text = re.sub('\n\n\n', '\n', text)
     text = re.sub('\n\n', '\n', text)
+    #remove html tags
+    text = re.sub('<.+?>', '', text)
     return text
 
 

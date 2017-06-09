@@ -27,7 +27,7 @@
 
 <h3>Other matches:</h3>
 <ul>
-{% for word in matches_and_meanings.keys() if word not in good_matches %}
+{% for word in other_matches %}
   <li><b> {{ word }} </b> <br> {{ matches_and_meanings[word] }} </li>
 {% endfor %}
 </ul>

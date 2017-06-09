@@ -11,11 +11,10 @@ def index():
         clues = clue_string.split()
         matches = get_matches(target)
         matches_and_meanings = get_meanings(matches)
-        print('\n matches_and_meanings : \n', matches_and_meanings)
-        good_matches = get_good_matches(matches_and_meanings, clues)
-        return render_template('index.html', target=target, clue='', matches_and_meanings=matches_and_meanings, good_matches=good_matches) #session['target'], clue=session['clue'])
+        good_matches, other_matches = get_good_matches(matches_and_meanings, clues)
+        return render_template('index.html', target=target, clue='', matches_and_meanings=matches_and_meanings, good_matches=good_matches, other_matches=other_matches) #session['target'], clue=session['clue'])
     else:
-        return render_template('index.html', target='', clue='', matches_and_meanings='', good_matches='')
+        return render_template('index.html', target='', clue='', matches_and_meanings='', good_matches='', other_matches='')
 
 app.secret_key = 'test'
 

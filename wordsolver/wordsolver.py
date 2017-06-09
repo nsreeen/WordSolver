@@ -37,12 +37,12 @@ def get_meanings(matches):
 
     for word in matches:
         meaning = get_wikipedia_extract(word)
-        if meaning == None:
-            meaning = '/' + get_wikipedia_disambiguation_page(word)
-        if meaning == None:
+        if meaning == '':
+            meaning = get_wikipedia_disambiguation_page(word)
+        if meaning == '':
             meaning = get_wictionary_meaning(word)
 
-        #meaning = clean(meaning)
+        meaning = clean(meaning)
         matches_and_meanings[word] = meaning
 
     return matches_and_meanings
@@ -52,35 +52,47 @@ def clean(text):
     #remove double line breaks
     text = re.sub('\n\n\n', '\n', text)
     text = re.sub('\n\n', '\n', text)
-    #remove html tags
+    #remove html tags and wikipedia stuff
     text = re.sub('<.+?>', '', text)
+    text = re.sub(r'\[(edit)\]', '', text) #<-- this line breaks it
     return text
 
 
 def get_wikipedia_extract(word):
-    query = 'https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exintro=&redirects=1&format=json&titles=' + word
-    r = requests.get(query)
-    result_object = r.json()
-    key = list(result_object['query']['pages'].keys())[0]
-    if key != None:
-        extract = result_object['query']['pages'][key]['extract']
-        if '</b> may refer to:</p>' not in extract:
-            return extract
-    return None
+    try:
+        query = 'https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exintro=&redirects=1&format=json&titles=' + word
+        r = requests.get(query)
+        result_object = r.json()
+        key = list(result_object['query']['pages'].keys())[0]
+        if key != None:
+            extract = result_object['query']['pages'][key]['extract']
+            if word + ' may refer to:' not in extract:
+                return extract
+        return ''
+    except:
+        return ''
 
 
 def get_wikipedia_disambiguation_page(word):
-    query = 'https://en.wikipedia.org/wiki/' + word
-    #try here?
-    result = requests.get(query)
-    text = result.text
+    try:
+        query = 'https://en.wikipedia.org/wiki/' + word
+        #try here?
+        result = requests.get(query)
+        text = result.text
 
-    start = re.search(' may refer to:</p>', text)
-    end = re.search('<span class="mw-headline" id="See_also">', text)
+        start = re.search(' may refer to:</p>', text)
+        end = re.search('<span class="mw-headline" id="See_also">', text)
 
-    text = text[start.end():end.start()]
+        text = text[start.end():end.start()]
 
-    return text
+        """text_list = text.split(',')[1:]
+        joiner = ' \n '
+        final_list = joiner.join(test_list)"""
+
+
+        return text #final_list
+    except:
+        return ''
 
 
 def get_wictionary_meaning(word):
@@ -96,7 +108,7 @@ def get_wictionary_meaning(word):
         text = text[:end.start()]
         return meaning
     except:
-        return None
+        return ''
 
 
 
@@ -113,12 +125,17 @@ def get_score(meaning, clues):
 def get_good_matches(matches_meanings_dict, clues):
     scores_dict = {} # might use this later to give better suggestions
     good_matches = []
+    other_matches = []
 
     for word, meaning in matches_meanings_dict.items():
-        score = get_score(meaning, clues)
+        if meaning != None:
+            score = get_score(meaning, clues)
+        else:
+            score = 0
         scores_dict[word] = score
         if score > 0:
             good_matches.append(word)
-        print(word, score)
+        else:
+            other_matches.append(word)
 
-    return good_matches
+    return good_matches, other_matches

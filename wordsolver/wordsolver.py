@@ -8,7 +8,7 @@ def get_matches(target):
     length = len(target)
     matches = []
 
-    word_list = open('wordsolver/word_list.txt', 'r')
+    word_list = open('wordsolver/word_list.txt', 'r') #wordsolver/
     len_word_list = 0
 
     for word in word_list:
@@ -19,7 +19,8 @@ def get_matches(target):
             matching = True
 
             for i, letter in enumerate(word):
-                if target[i] != "?" and letter != target[i]:
+                if letter != "_" and target[i] == "_" or \
+                   target[i] != "?" and letter != target[i]:
                     matching = False
 
             if matching == True:
@@ -36,23 +37,39 @@ def get_meanings(matches):
     matches_and_meanings = {}
 
     for word in matches:
-        meaning = get_wikipedia_extract(word)
-        if meaning == '':
-            meaning = get_wikipedia_disambiguation_page(word)
-        if meaning == '':
-            meaning = get_wictionary_meaning(word)
+        extract = get_wikipedia_extract(word)
+        disambiguation = get_wikipedia_disambiguation_page(word)
+        #definition = get_wictionary_meaning(word) # won't use this for now
 
-        meaning = clean(meaning)
+        extract = clean(extract)
+        disambiguation = clean(disambiguation)
+
+        if 'may refer to:' in extract:
+            meaning = extract.split(' . ')
+            meaning = meaning[1:]
+        else:
+            meaning = [extract]
+
         matches_and_meanings[word] = meaning
 
     return matches_and_meanings
 
+def format_list(text, word):
+    text = re.sub(word, ' ', text)
+    text = re.sub('(.+?)', '', text)
+    text = clean(text)
+    print(text)
+    text_list = text.split(',')[1:]
+    print(text_list)
+    return text_list
 
 def clean(text):
-    #remove double line breaks
-    text = re.sub('\n\n\n', '\n', text)
-    text = re.sub('\n\n', '\n', text)
-    #remove html tags and wikipedia stuff
+    # remove line breaks
+    text = re.sub('\n\n\n', '', text)
+    text = re.sub('\n\n', '', text)
+    text = re.sub('\n', '', text)
+    # remove html tags and wikipedia stuff
+    text = re.sub('<li>.+?,', ' . ', text)
     text = re.sub('<.+?>', '', text)
     text = re.sub(r'\[(edit)\]', '', text) #<-- this line breaks it
     return text
@@ -85,12 +102,8 @@ def get_wikipedia_disambiguation_page(word):
 
         text = text[start.end():end.start()]
 
-        """text_list = text.split(',')[1:]
-        joiner = ' \n '
-        final_list = joiner.join(test_list)"""
 
-
-        return text #final_list
+        return text
     except:
         return ''
 
@@ -99,6 +112,7 @@ def get_wictionary_meaning(word):
     query = 'https://en.wiktionary.org/wiki/' + word
     result = requests.get(query) #urllib.request.urlopen(query).read()
     text = result.text
+    #print('\n\n', word, ' wictionary: ', text)
     try:
         start = re.search('id="Translations', text) #(.+?)style="text-align:left;">
         text = text[start.end():]
@@ -117,25 +131,34 @@ def get_wictionary_meaning(word):
 def get_score(meaning, clues):
     score = 0
     for clue_word in clues:
-        if clue_word in meaning:
-            score = score + 1
+        for item in meaning:
+            if clue_word in item:
+                score = score + 1
     return score
 
 
-def get_good_matches(matches_meanings_dict, clues):
+def get_good_matches(matches_meanings_dict, clue_string):
     scores_dict = {} # might use this later to give better suggestions
-    good_matches = []
-    other_matches = []
+
+    clues = clue_string.split()
 
     for word, meaning in matches_meanings_dict.items():
-        if meaning != None:
-            score = get_score(meaning, clues)
-        else:
-            score = 0
+        #if meaning != None:
+        score = get_score(meaning, clues)
+        #else:
+        #    score = 0
         scores_dict[word] = score
-        if score > 0:
-            good_matches.append(word)
-        else:
-            other_matches.append(word)
 
-    return good_matches, other_matches
+    #print('\n\n SCORES DICT : ', scores_dict)
+
+    matches = scores_dict.keys()
+    ordered_matches = sorted(matches, reverse=True, key=lambda word: scores_dict[word])
+
+    return ordered_matches
+
+
+"""word = "?ye"
+clues = "vision sight see light"
+matches = get_matches(word)
+meaningsdict = get_meanings(matches)
+ordered_matches = get_good_matches(meaningsdict, clues)"""

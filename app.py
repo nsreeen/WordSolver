@@ -7,14 +7,16 @@ app = Flask(__name__)
 def index():
     if request.method == 'POST':
         target = request.form['target']
-        clue_string = request.form['clue']
-        clues = clue_string.split()
+        clue = request.form['clue']
+
         matches = get_matches(target)
         matches_and_meanings = get_meanings(matches)
-        good_matches, other_matches = get_good_matches(matches_and_meanings, clues)
-        return render_template('index.html', target=target, clue='', matches_and_meanings=matches_and_meanings, good_matches=good_matches, other_matches=other_matches) #session['target'], clue=session['clue'])
+        ordered_matches = get_good_matches(matches_and_meanings, clue)
+        print(target, clue)
+        print('\n\n ORDERED MATCHES: ', ordered_matches)
+        return render_template('index.html', target=target, clue='', matches_and_meanings=matches_and_meanings, ordered_matches=ordered_matches) #session['target'], clue=session['clue'])
     else:
-        return render_template('index.html', target='', clue='', matches_and_meanings='', good_matches='', other_matches='')
+        return render_template('index.html', target='', clue='', matches_and_meanings='', ordered_matches='')
 
 app.secret_key = 'test'
 

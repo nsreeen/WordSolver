@@ -18,19 +18,20 @@
 
 <h2>Results for {{ target }} </h2>
 
-<h3>Best matches:</h3>
-<ul>
-{% for word in good_matches %}
-  <li><b> {{ word }} </b> <br> {{ matches_and_meanings[word] }} </li>
-{% endfor %}
-</ul>
+<h3>Possible matches:</h3>
 
-<h3>Other matches:</h3>
-<ul>
-{% for word in other_matches %}
-  <li><b> {{ word }} </b> <br> {{ matches_and_meanings[word] }} </li>
+{% for word in ordered_matches %}
+  <div class="word-result">
+  <b> {{ word }} </b>
+  <!-- <p> definition: {{ matches_and_meanings[word][0] }} </p> -->
+  {% for meaning in matches_and_meanings[word] %}
+    <p> {{ meaning }} </p>
+  {% endfor %}
+
+
+  </div>
 {% endfor %}
-</ul>
+
 
 </body>
 </html>

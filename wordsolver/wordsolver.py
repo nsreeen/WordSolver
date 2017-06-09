@@ -3,7 +3,6 @@ import re
 
 
 # GET POTENTIAL MATCHES
-
 def get_matches(target):
     length = len(target)
     matches = []
@@ -30,19 +29,17 @@ def get_matches(target):
     return matches
 
 
-
 # GET WORD MEANING
-
 def get_meanings(matches):
     matches_and_meanings = {}
 
     for word in matches:
         extract = get_wikipedia_extract(word)
         disambiguation = get_wikipedia_disambiguation_page(word)
-        #definition = get_wictionary_meaning(word) # won't use this for now
+        #definition = get_wiktionary_meaning(word) # won't use this for now
 
         extract = clean(extract)
-        disambiguation = clean(disambiguation)
+        #disambiguation = clean(disambiguation) # unnecessary
 
         if 'may refer to:' in extract:
             meaning = extract.split(' . ')
@@ -54,21 +51,11 @@ def get_meanings(matches):
 
     return matches_and_meanings
 
-def format_list(text, word):
-    text = re.sub(word, ' ', text)
-    text = re.sub('(.+?)', '', text)
-    text = clean(text)
-    print(text)
-    text_list = text.split(',')[1:]
-    print(text_list)
-    return text_list
 
 def clean(text):
-    # remove line breaks
     text = re.sub('\n\n\n', '', text)
     text = re.sub('\n\n', '', text)
     text = re.sub('\n', '', text)
-    # remove html tags and wikipedia stuff
     text = re.sub('<li>.+?,', ' . ', text)
     text = re.sub('<.+?>', '', text)
     text = re.sub(r'\[(edit)\]', '', text) #<-- this line breaks it
@@ -102,17 +89,16 @@ def get_wikipedia_disambiguation_page(word):
 
         text = text[start.end():end.start()]
 
-
         return text
     except:
         return ''
 
 
-def get_wictionary_meaning(word):
+def get_wiktionary_meaning(word):
     query = 'https://en.wiktionary.org/wiki/' + word
     result = requests.get(query) #urllib.request.urlopen(query).read()
     text = result.text
-    #print('\n\n', word, ' wictionary: ', text)
+    #print('\n\n', word, ' wiktionary: ', text)
     try:
         start = re.search('id="Translations', text) #(.+?)style="text-align:left;">
         text = text[start.end():]
@@ -125,9 +111,7 @@ def get_wictionary_meaning(word):
         return ''
 
 
-
 # RATE MEANINGS BASED ON CLUES TO FIND THE BEST MATCHES
-
 def get_score(meaning, clues):
     score = 0
     for clue_word in clues:
@@ -143,13 +127,8 @@ def get_good_matches(matches_meanings_dict, clue_string):
     clues = clue_string.split()
 
     for word, meaning in matches_meanings_dict.items():
-        #if meaning != None:
         score = get_score(meaning, clues)
-        #else:
-        #    score = 0
         scores_dict[word] = score
-
-    #print('\n\n SCORES DICT : ', scores_dict)
 
     matches = scores_dict.keys()
     ordered_matches = sorted(matches, reverse=True, key=lambda word: scores_dict[word])

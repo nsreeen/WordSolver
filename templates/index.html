@@ -21,15 +21,15 @@
 <h3>Possible matches:</h3>
 
 {% for word in ordered_matches %}
+
   <div class="word-result">
   <b> {{ word }} </b>
   <!-- <p> definition: {{ matches_and_meanings[word][0] }} </p> -->
   {% for meaning in matches_and_meanings[word] %}
     <p> {{ meaning }} </p>
   {% endfor %}
-
-
   </div>
+
 {% endfor %}
 
 

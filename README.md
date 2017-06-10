@@ -1,2 +1,5 @@
 # WordSolver
-For solving the really hard crossword words left over at the end
+
+An app to help solve the really hard words in crosswords.
+
+https://wordsolver.herokuapp.com/

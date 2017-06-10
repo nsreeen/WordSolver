@@ -7,7 +7,7 @@ def get_matches(target):
     length = len(target)
     matches = []
 
-    word_list = open('wordsolver/word_list.txt', 'r') #wordsolver/
+    word_list = open('wordsolver/word_list.txt', 'r') 
     len_word_list = 0
 
     for word in word_list:
@@ -134,6 +134,7 @@ def get_good_matches(matches_meanings_dict, clue_string):
     ordered_matches = sorted(matches, reverse=True, key=lambda word: scores_dict[word])
 
     return ordered_matches
+
 
 
 """word = "?ye"

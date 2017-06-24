@@ -1,5 +1,4 @@
-import requests
-import re
+import requests, re
 
 
 # GET POTENTIAL MATCHES
@@ -7,7 +6,7 @@ def get_matches(target):
     length = len(target)
     matches = []
 
-    word_list = open('wordsolver/word_list.txt', 'r') 
+    word_list = open('wordsolver/word_list.txt', 'r')
     len_word_list = 0
 
     for word in word_list:
@@ -29,28 +28,29 @@ def get_matches(target):
     return matches
 
 
-# GET WORD MEANING
+# GET WORD MEANINGS
 def get_meanings(matches):
     matches_and_meanings = {}
 
     for word in matches:
-        extract = get_wikipedia_extract(word)
-        disambiguation = get_wikipedia_disambiguation_page(word)
-        #definition = get_wiktionary_meaning(word) # won't use this for now
-
-        extract = clean(extract)
-        #disambiguation = clean(disambiguation) # unnecessary
-
-        if 'may refer to:' in extract:
-            meaning = extract.split(' . ')
-            meaning = meaning[1:]
-        else:
-            meaning = [extract]
-
+        meaning = get_meaning(word)
         matches_and_meanings[word] = meaning
 
     return matches_and_meanings
 
+def get_meaning(word):
+    extract = get_wikipedia_extract(word)
+    disambiguation = get_wikipedia_disambiguation_page(word)
+    #definition = get_wiktionary_meaning(word) # won't use this for now
+    extract = clean(extract)
+    #disambiguation = clean(disambiguation) # unnecessary
+
+    if 'may refer to:' in extract:
+        meaning = extract.split(' . ')
+        meaning = meaning[1:]
+    else:
+        meaning = [extract]
+    return meaning
 
 def clean(text):
     text = re.sub('\n\n\n', '', text)

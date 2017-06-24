@@ -1,13 +1,31 @@
-<html>
-    <head>
-        <title>Welcome to WordSolver</title>
-    </head>
-<body>
+{% extends 'base.html' %}
 
-<h1>Welcome to WordSolver</h1>
+{% block content %}
 
-<p> Results for target word: {{ target }} </p>
-<p> With clue words: {{ clue }} </p>
+  <div class="row"><div class="col-sm-10 col-sm-offset-1">
 
-</body>
-</html>
+    <div class="row"><div class="col-sm-10 col-sm-offset-1">
+        <h2>Possible matches for {{ target }} </h2>
+    </div></div>
+
+        {% for word in matches %}
+
+        <div class="row"><div class="col-sm-10 col-sm-offset-1">
+
+
+          <div class="word-result" style="margin-bottom: 40px; border: 1px solid LightGrey">
+          <div> <b> {{ word }} </b></div>
+          <div id="wordbox{{word}}"><a href="javascript:getmeaning('{{word}}', '#wordbox{{word}}');">Get meaning</a></div>
+
+        </div >
+
+
+      </div></div>
+
+    {% endfor %}
+
+</div> <!-- end container -->
+
+
+
+{% endblock %}

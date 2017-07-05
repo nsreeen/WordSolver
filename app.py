@@ -11,7 +11,7 @@ app.secret_key = 'test'
 def index():
     form = WordForm()
 
-    if request.method == 'POST': #this should be GET! also maybe I should make a database for the synonyms? or a hashtable?? for crossword solver part of it, how would that work?
+    if request.method == 'POST': 
         print(request)
         target = form.target.data
         form.target.data = ""

@@ -1,5 +1,12 @@
 # WordSolver
 
-An app to help solve the really hard words in crosswords.
+A web app and terminal tool to help you solve the hard words in crosswords.
 
-https://wordsolver.herokuapp.com/
+To use the web app: https://wordsolver.herokuapp.com/
+
+## Using the terminal tool
+
+Save a copy of this repository on your computer.  From the root (stay in the main folder), type:
+```python wordsolver/wordsolver.py```
+
+*Written using python 3.5

@@ -121,14 +121,13 @@ def get_score(meaning, clues):
     return score
 
 
-def get_good_matches(matches_meanings_dict, clue_string):
+def sort_matches(matches_meanings_dict, clues):
     scores_dict = {} # might use this later to give better suggestions
-
-    clues = clue_string.split()
 
     for word, meaning in matches_meanings_dict.items():
         score = get_score(meaning, clues)
-        scores_dict[word] = score
+        if score > 0:
+            scores_dict[word] = score
 
     matches = scores_dict.keys()
     ordered_matches = sorted(matches, reverse=True, key=lambda word: scores_dict[word])
@@ -137,8 +136,59 @@ def get_good_matches(matches_meanings_dict, clue_string):
 
 
 
-"""word = "?ye"
-clues = "vision sight see light"
-matches = get_matches(word)
-meaningsdict = get_meanings(matches)
-ordered_matches = get_good_matches(meaningsdict, clues)"""
+# TERMINAL TOOL
+
+def print_match_and_meaning(match, meaning=None, full_meaning=False):
+    print("\n", match)
+    if len(meaning) == 1 and full_meaning == False:
+        print(meaning[0][:200])
+    elif len(meaning) == 1 and full_meaning == True:
+        print(meaning[0])
+    else:
+        print("; ".join(meaning))
+    print('\n')
+
+if __name__ == "__main__":
+
+    with open('wordsolver/stopwords.txt') as stopwordsfile:
+        stopwords = [word.strip() for word in stopwordsfile]
+
+    print("\nWelcome to wordsolver!")
+    target = input("\nPlease type the pattern of the target word, using '?' for unknown letters, eg. '?y?'\n>>")
+    clue = input("\nPlease type the clue\n>>")
+
+    print("\n Please wait while matches are found\n")
+
+    matches = get_matches(target)
+    meanings_dict = get_meanings(matches)
+
+    print("-----------------------------------------")
+
+    for match, meaning in meanings_dict.items():
+        print_match_and_meaning(match, meaning)
+
+    print("-----------------------------------------")
+
+    print("To sort the list and see the most likely matches, type 'sort'")
+    print("To get the full meaning of a word, type the word")
+    print("To quit, type 'q'")
+
+    running = True
+
+    while running:
+
+        user_input = input(">>")
+
+        if user_input == "q":
+            running = False
+
+        elif user_input == "sort":
+            clues = [word for word in clue.split(" ") if word not in stopwords]
+            sorted_matches = sort_matches(meanings_dict, clues)
+            for match in sorted_matches:
+                meaning = meanings_dict.get(match, None)
+                print_match_and_meaning(match, meaning)
+
+        else:
+            meaning = meanings_dict.get(user_input, None)
+            print_match_and_meaning(user_input, meaning, full_meaning=True)

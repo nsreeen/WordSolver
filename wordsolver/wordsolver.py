@@ -1,8 +1,11 @@
 import requests, re
 
-# OPEN LIST OF WORDS
+# open list of words
 with open('wordsolver/word_list.txt') as f:
     words = set(f.read().splitlines())
+
+# regex patterns for cleaning text:
+patterns = [r'\n\n\n', r'\n\n', r'\n', r'<.+?>', r'\[(edit)\]']
 
 # GET POTENTIAL MATCHES
 def get_matches(target):
@@ -36,28 +39,27 @@ def get_meanings(matches):
     return matches_and_meanings
 
 def get_meaning(word):
-    print('\n getting meaning for ', word)
     extract = get_wikipedia_extract(word)
-    #disambiguation = get_wikipedia_disambiguation_page(word)
-    #definition = get_wiktionary_meaning(word) # won't use this for now
     extract = clean(extract)
-    #disambiguation = clean(disambiguation)
-    print('got extract')
+
+    # if no extract returned, could get from another source:
+    # disambiguation = get_wikipedia_disambiguation_page(word)
+    # definition = get_wiktionary_meaning(word) # won't use this for now
+
+    # extract may be a disambiguation page with multiple meanings of the word
     if 'may refer to:' in extract:
         meaning = extract.split(' . ')
         meaning = meaning[1:]
     else:
         meaning = [extract]
-    print(meaning)
+
     return meaning
 
 def clean(text):
-    text = re.sub('\n\n\n', '', text)
-    text = re.sub('\n\n', '', text)
-    text = re.sub('\n', '', text)
+    # remove unwanted patterns using the global list of patterns
+    for pattern in patterns:
+        text = re.sub(pattern, '', text)
     text = re.sub('<li>.+?,', ' . ', text)
-    text = re.sub('<.+?>', '', text)
-    text = re.sub(r'\[(edit)\]', '', text) #<-- this line breaks it
     return text
 
 
@@ -69,8 +71,7 @@ def get_wikipedia_extract(word):
         key = list(result_object['query']['pages'].keys())[0]
         if key != None:
             extract = result_object['query']['pages'][key]['extract']
-            if word + ' may refer to:' not in extract:
-                return extract
+            return extract
         return ''
     except:
         return ''
@@ -79,15 +80,11 @@ def get_wikipedia_extract(word):
 def get_wikipedia_disambiguation_page(word):
     try:
         query = 'https://en.wikipedia.org/wiki/' + word
-        #try here?
         result = requests.get(query)
         text = result.text
-
         start = re.search(' may refer to:</p>', text)
         end = re.search('<span class="mw-headline" id="See_also">', text)
-
         text = text[start.end():end.start()]
-
         return text
     except:
         return ''
@@ -119,7 +116,7 @@ def get_score(meaning, clues):
 
 
 def sort_matches(matches_meanings_dict, clues):
-    scores_dict = {} # might use this later to give better suggestions
+    scores_dict = {}
 
     for word, meaning in matches_meanings_dict.items():
         score = get_score(meaning, clues)
@@ -149,10 +146,10 @@ def print_match_and_meaning(match, meaning=None, full_meaning=False):
 
 mat= get_matches('?ye')
 print(mat)
-get_meanings(mat)
+print(get_meanings(mat))
 
 
-"""if __name__ == "__main__":
+if __name__ == "__main__":
 
     with open('wordsolver/stopwords.txt') as stopwordsfile:
         stopwords = [word.strip() for word in stopwordsfile]
@@ -196,4 +193,3 @@ get_meanings(mat)
         else:
             meaning = meanings_dict.get(user_input, None)
             print_match_and_meaning(user_input, meaning, full_meaning=True)
-"""

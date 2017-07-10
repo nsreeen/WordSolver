@@ -1,30 +1,27 @@
 import requests, re
 
+# OPEN LIST OF WORDS
+with open('wordsolver/word_list.txt') as f:
+    words = set(f.read().splitlines())
 
 # GET POTENTIAL MATCHES
 def get_matches(target):
-    length = len(target)
+    len_target = len(target)
     matches = []
 
-    word_list = open('wordsolver/word_list.txt', 'r')
-    len_word_list = 0
+    length_matches = [word for word in words if len(word) == len_target]
 
-    for word in word_list:
-        word = word.strip()
-        len_word_list += 1
+    for word in length_matches:
+        matching = True
 
-        if len(word) == length:
-            matching = True
+        for i, letter in enumerate(word):
+            if letter != "_" and target[i] == "_" or \
+               target[i] != "?" and letter != target[i]:
+                matching = False
 
-            for i, letter in enumerate(word):
-                if letter != "_" and target[i] == "_" or \
-                   target[i] != "?" and letter != target[i]:
-                    matching = False
+        if matching == True:
+            matches.append(word)
 
-            if matching == True:
-                matches.append(word)
-
-    word_list.close()
     return matches
 
 
@@ -39,17 +36,19 @@ def get_meanings(matches):
     return matches_and_meanings
 
 def get_meaning(word):
+    print('\n getting meaning for ', word)
     extract = get_wikipedia_extract(word)
-    disambiguation = get_wikipedia_disambiguation_page(word)
+    #disambiguation = get_wikipedia_disambiguation_page(word)
     #definition = get_wiktionary_meaning(word) # won't use this for now
     extract = clean(extract)
-    #disambiguation = clean(disambiguation) # unnecessary
-
+    #disambiguation = clean(disambiguation)
+    print('got extract')
     if 'may refer to:' in extract:
         meaning = extract.split(' . ')
         meaning = meaning[1:]
     else:
         meaning = [extract]
+    print(meaning)
     return meaning
 
 def clean(text):
@@ -96,12 +95,10 @@ def get_wikipedia_disambiguation_page(word):
 
 def get_wiktionary_meaning(word):
     query = 'https://en.wiktionary.org/wiki/' + word
-    result = requests.get(query) #urllib.request.urlopen(query).read()
+    result = requests.get(query)
     text = result.text
-    #print('\n\n', word, ' wiktionary: ', text)
     try:
-        start = re.search('id="Translations', text) #(.+?)style="text-align:left;">
-        text = text[start.end():]
+        start = re.search('id="Translations', text)
         start = re.search('style="text-align:left;">', text)
         text = text[start.end():]
         end = re.search("</div>", text)
@@ -148,7 +145,14 @@ def print_match_and_meaning(match, meaning=None, full_meaning=False):
         print("; ".join(meaning))
     print('\n')
 
-if __name__ == "__main__":
+
+
+mat= get_matches('?ye')
+print(mat)
+get_meanings(mat)
+
+
+"""if __name__ == "__main__":
 
     with open('wordsolver/stopwords.txt') as stopwordsfile:
         stopwords = [word.strip() for word in stopwordsfile]
@@ -192,3 +196,4 @@ if __name__ == "__main__":
         else:
             meaning = meanings_dict.get(user_input, None)
             print_match_and_meaning(user_input, meaning, full_meaning=True)
+"""

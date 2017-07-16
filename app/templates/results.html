@@ -2,29 +2,34 @@
 
 {% block content %}
 
-  <div class="row"><div class="col-sm-10 col-sm-offset-1">
 
-    <div class="row"><div class="col-sm-10 col-sm-offset-1">
-        <h2>Possible matches for {{ target }} </h2>
-    </div></div>
+        <div class="info">Possible matches for {{ target }} </div>
+
 
         {% for word in matches %}
 
-        <div class="row"><div class="col-sm-10 col-sm-offset-1">
 
 
-          <div class="word-result" style="margin-bottom: 40px; border: 1px solid LightGrey">
-          <div> <b> {{ word }} </b></div>
-          <div id="wordbox{{word}}"><a href="javascript:getmeaning('{{word}}', '#wordbox{{word}}');">Get meaning</a></div>
+          <div class="word-result">
+            <div class="word-flex-box"> <span class="word"><b> {{ word }} </b> </span>
+              <span class="meaning-link" id="meaninglink{{word}}"><a href="javascript:getmeaning('{{word}}', '#wordbox{{word}}', '#meaninglink{{word}}');">Get meaning</a></span></div>
+            <div class="meaning-box" id="wordbox{{word}}"></div>
 
-        </div >
+            <!-- a hidden div
+            space for abbr text, read more link
+            full text, read less link -->
+
+            </div>
 
 
-      </div></div>
+
+          </div >
+
+
 
     {% endfor %}
 
-</div> <!-- end container -->
+
 
 
 

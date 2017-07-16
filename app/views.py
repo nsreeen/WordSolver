@@ -24,4 +24,5 @@ def results():
 def getmeaning():
     word = request.form['word']
     meaning = get_meaning(word)
-    return jsonify(meaning=meaning)
+    print('short meaning: ', meaning[:5])
+    return jsonify(short_meaning=meaning[:5], long_meaning=meaning)

@@ -27,16 +27,17 @@
             padding: 10px;
             border-radius: 5px;
           }
-          .word-flex-box {
-            /*justify-content: space-between;
-            flex-direction: row;*/
-          }
-          .word {
-            /*align-items: flex-start;*/
-          }
           .meaning-link {
-            /*align-items: flex-end;*/
             float: right;
+          }
+          .short-meaning {
+            display: none;
+          }
+          .long-meaning {
+            display: none;
+          }
+          .read-link {
+            color: Grey;
           }
         </style>
     </head>
@@ -47,24 +48,31 @@
     <h1>Wordsolver</h1>
   </div></div> <!-- end row and col -->
 
-  <div class="row"><div class="col-sm-6 col-sm-offset-3">
     {% block content %}{% endblock %}
-  </div></div> <!-- end row and col -->
+
 
 </div> <!-- end container -->
 
 <script>
-function getmeaning(word, wordboxid, linkid) {
+function getmeaning(word, shortTextBox, longTextBox, meaningLink, shortBox) {
     $.post('/getmeaning', {
         word: word
     }).done(function(gotmeaning) {
         console.log(gotmeaning['meaning']);
-        $(wordboxid).text(gotmeaning['meaning']);
-        $(linkid).text('');
+        $(shortTextBox).text(gotmeaning['short_meaning']);
+        $(longTextBox).text(gotmeaning['long_meaning']);
+        $(meaningLink).text('');
+        $(shortBox).css('display', 'block');
+
     }).fail(function() {
         console.log(word);
         $(wordboxid).text('error');
     });
+}
+
+function showhide(show, hide) {
+    $(show).css('display', 'block');
+    $(hide).css('display', 'none');
 }
 </script>
 

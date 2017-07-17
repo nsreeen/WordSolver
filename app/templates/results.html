@@ -2,47 +2,46 @@
 
 {% block content %}
 
-    <div class="row"><div class="col-sm-6 col-sm-offset-3">
+    <!-- <div class="row"><div class="col-sm-6 col-sm-offset-3"> -->
         <div class="info">Possible matches for {{ target }} </div>
-    </div></div> <!-- end row and col -->
+    <!-- </div></div> <! end row and col -->
 
         {% for word in matches %}
 
 
-    <div class="row"><div class="col-sm-6 col-sm-offset-3">
 
-          <div class="word-result">
-            <div class="word-flex-box"> <span class="word"><b> {{ word }} </b> </span>
-              <span class="meaning-link" id="meaninglink{{word}}"><a href="javascript:getmeaning('{{word}}', '#shorttext{{word}}', '#longtext{{word}}', '#meaninglink{{word}}', '#meaningbox{{word}}short');">Get meaning</a></span></div>
 
-            <div class="meaning-box" id="meaningbox{{word}}">
+            <div class="word-result">
+
+              <span class="word"><b> {{ word }} </b> </span>
+              <span class="link" id="meaninglink{{word}}"><a href="javascript:getmeaning('{{word}}', '#shorttext{{word}}', '#longtext{{word}}', '#meaninglink{{word}}', '#meaningbox{{word}}short');">get wiki entry</a></span>
+            <!-- </div> -->
+
+            <!-- <div class="meaning-box" id="meaningbox{{word}}"> -->
 
               <div class="short-meaning" id="meaningbox{{word}}short">
                 <span id="shorttext{{word}}"></span>
-                <span class="read-link" id="readmore{{word}}">
+                <span class="link" id="readmore{{word}}">
                   <a href="javascript:showhide('#meaningbox{{word}}long', '#meaningbox{{word}}short');">
                   read more</a></span>
               </div>
+
               <div class="long-meaning" id="meaningbox{{word}}long">
                 <span id="longtext{{word}}"></span>
-                <span class="read-link" id="readless{{word}}">
+                <span class="link" id="readless{{word}}">
                   <a href="javascript:showhide('#meaningbox{{word}}short', '#meaningbox{{word}}long');">
                     read less</a></span>
               </div>
 
             </div>
 
-      </div></div> <!-- end row and col -->
 
-            <!-- a hidden div
-            space for abbr text, read more link
-            full text, read less link -->
 
-            </div>
+            <!-- </div>
 
 
 
-          </div >
+          </div > -->
 
 
 

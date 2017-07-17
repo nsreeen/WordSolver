@@ -3,16 +3,18 @@
 {% block content %}
 
 
-  <div class="row"><div class="col-sm-6 col-sm-offset-3">
-    
+  <!-- <div class="row"><div class="col-sm-6 col-sm-offset-3"> -->
+
       <div class="info">Enter a word below.<br>
-      Represent unknown letters with '?', for example: '?ye'</div>
+      <br>
+      Represent unknown letters with '?'<br>
+      For example: '?ye'</div>
 
       <form action="" method="post" name="word">
        {{ form.hidden_tag() }}
        <p> {{ form.target }} <input type="submit" value="Find"></p>
      </form>
 
-  </div></div> <!-- end row and col -->
+  <!-- </div></div> <! end row and col -->
 
 {% endblock %}

@@ -9,8 +9,13 @@
         <style>
           h1 {
             font-family: 'Roboto', sans-serif;
-            font-size: 3em;
-            margin-bottom: 30px;
+            font-size: 3.5em;
+
+          }
+          .header {
+            border-bottom: 1px solid Grey;
+            margin-bottom: 20px;
+            padding: 10px;
           }
           body {
             background-color: Lavender;
@@ -19,6 +24,7 @@
           }
           .info {
             margin-bottom: 30px;
+            font-size: 1.2em;
           }
           .word-result {
             margin-bottom: 20px;
@@ -27,8 +33,10 @@
             padding: 10px;
             border-radius: 5px;
           }
-          .meaning-link {
+          .link {
             float: right;
+            font-size: 0.9em;
+            color: Grey;
           }
           .short-meaning {
             display: none;
@@ -36,20 +44,19 @@
           .long-meaning {
             display: none;
           }
-          .read-link {
-            color: Grey;
-          }
+
         </style>
     </head>
 <body>
 <div id="body" class="container-fluid">
 
-  <div class="row"><div class="col-sm-6 col-sm-offset-3">
+  <div class="header row"><div class="col-sm-6 col-sm-offset-3">
     <h1>Wordsolver</h1>
   </div></div> <!-- end row and col -->
 
+  <div class="row"><div class="col-sm-6 col-sm-offset-3">
     {% block content %}{% endblock %}
-
+  </div></div> <!-- end row and col -->
 
 </div> <!-- end container -->
 
@@ -66,7 +73,7 @@ function getmeaning(word, shortTextBox, longTextBox, meaningLink, shortBox) {
 
     }).fail(function() {
         console.log(word);
-        $(wordboxid).text('error');
+        // $().text('error');
     });
 }
 

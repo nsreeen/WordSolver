@@ -42,18 +42,15 @@ def get_meaning(word):
     extract = get_wikipedia_extract(word)
     extract = clean(extract)
 
-    # if no extract returned, could get from another source:
-    # disambiguation = get_wikipedia_disambiguation_page(word)
-    # definition = get_wiktionary_meaning(word) # won't use this for now
-
-    # extract may be a disambiguation page with multiple meanings of the word
-    if 'may refer to:' in extract:
-        meaning = extract.split(' . ')
-        meaning = meaning[1:]
+    if 'may refer to:' in extract and len(extract) > 1:
+        extract = extract.split(' . ')
+        meaning = extract[0]
+        for i in range(1, len(extract)-1):
+            meaning = meaning + "<li>" + extract[i] + "</li>"
     else:
-        meaning = [extract]
+        meaning = extract
 
-    return meaning
+    return [meaning]
 
 def clean(text):
     # remove unwanted patterns using the global list of patterns
@@ -144,9 +141,6 @@ def print_match_and_meaning(match, meaning=None, full_meaning=False):
 
 
 
-mat= get_matches('?ye')
-print(mat)
-print(get_meanings(mat))
 
 
 if __name__ == "__main__":

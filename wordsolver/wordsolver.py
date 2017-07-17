@@ -7,6 +7,7 @@ with open('wordsolver/word_list.txt') as f:
 
 # GET POTENTIAL MATCHES
 def get_matches(target):
+    target = target.lower()
     len_target = len(target)
     matches = []
 
@@ -38,7 +39,6 @@ def get_meanings(matches):
 
 def get_meaning(word):
     extract = get_wikipedia_extract(word)
-    print(extract)
     if 'may refer to:' in extract:
         extract = clean_disambiguation(extract, word)
     else:
@@ -59,18 +59,7 @@ def clean_disambiguation(text, word):
     text = re.sub(r'<dt>', '', text)
     text = re.sub(r'</dl>', '', text)
     text = re.sub(r'<dl>', '<br>', text)
-    text = re.sub(r'<b>', '<em>', text)
-    text = re.sub(r'</b>', '</em>', text)
-    #print('\n', text)
-    #text = re.sub(word, ' ! ', text, re.IGNORECASE)
-    #print('\n', text)
-    #text = clean(text)
     text = start + text
-    #print('\n', text)
-
-    #print('\n', text)
-    #text = re.sub('!', '<br>', text)
-    print('\n', text)
     return text
 
 def get_wikipedia_extract(word):
@@ -162,7 +151,7 @@ if __name__ == "__main__":
         stopwords = [word.strip() for word in stopwordsfile]
 
     print("\nWelcome to wordsolver!")
-    target = input("\nPlease type the pattern of the target word, using '?' for unknown letters, eg. '?y?'\n>>")
+    target = input("\nType target word pattern. Use '?' for unknown letters eg.'?y?'\n>>")
     clue = input("\nPlease type the clue\n>>")
 
     print("\n Please wait while matches are found\n")

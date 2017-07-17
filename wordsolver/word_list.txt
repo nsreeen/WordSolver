@@ -3,8 +3,8 @@ A'man
 A-bomb
 A-horizon
 A-list
-a-ok(p)
-a-okay(p)
+a-ok
+a-okay
 A-one
 A-team
 A.D.
@@ -13873,7 +13873,6 @@ bisulcate
 bit
 bit-by-bit
 bitartrate
-bitch
 bitchery
 bitchiness
 bitchy
@@ -88207,12 +88206,6 @@ Nigerian_monetary_unit
 Nigerien
 Niger_franc
 Niger_River
-nigga
-niggard
-niggardliness
-niggardly
-niggardness
-nigger
 niggle
 niggler
 niggling
@@ -120167,7 +120160,6 @@ sonorousness
 sonsie
 sonsy
 Sontag
-son_of_a_bitch
 soon
 sooner
 sooner_or_later

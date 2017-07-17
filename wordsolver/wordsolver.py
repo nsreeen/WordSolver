@@ -1,11 +1,9 @@
-import requests, re
+import requests
+import re
 
 # open list of words
 with open('wordsolver/word_list.txt') as f:
     words = set(f.read().splitlines())
-
-# regex patterns for cleaning text:
-patterns = [r'\n\n\n', r'\n\n', r'\n', r'<.+?>', r'\[(edit)\]']
 
 # GET POTENTIAL MATCHES
 def get_matches(target):
@@ -40,25 +38,40 @@ def get_meanings(matches):
 
 def get_meaning(word):
     extract = get_wikipedia_extract(word)
-    extract = clean(extract)
-
-    if 'may refer to:' in extract and len(extract) > 1:
-        extract = extract.split(' . ')
-        meaning = extract[0]
-        for i in range(1, len(extract)-1):
-            meaning = meaning + "<li>" + extract[i] + "</li>"
+    print(extract)
+    if 'may refer to:' in extract:
+        extract = clean_disambiguation(extract, word)
     else:
-        meaning = extract
-
-    return [meaning]
+        extract = clean(extract)
+    return extract
 
 def clean(text):
-    # remove unwanted patterns using the global list of patterns
+    patterns = [r'\n\n\n', r'\n\n', r'\n', r'<.+?>', r'\[(edit)\]']
     for pattern in patterns:
         text = re.sub(pattern, '', text)
-    text = re.sub('<li>.+?,', ' . ', text)
     return text
 
+def clean_disambiguation(text, word):
+    cut = text.find('may refer to:') + len('may refer to:')
+    start = text[:cut]
+    text = text[cut:]
+    text = re.sub(r'</dt>', '', text)
+    text = re.sub(r'<dt>', '', text)
+    text = re.sub(r'</dl>', '', text)
+    text = re.sub(r'<dl>', '<br>', text)
+    text = re.sub(r'<b>', '<em>', text)
+    text = re.sub(r'</b>', '</em>', text)
+    #print('\n', text)
+    #text = re.sub(word, ' ! ', text, re.IGNORECASE)
+    #print('\n', text)
+    #text = clean(text)
+    text = start + text
+    #print('\n', text)
+
+    #print('\n', text)
+    #text = re.sub('!', '<br>', text)
+    print('\n', text)
+    return text
 
 def get_wikipedia_extract(word):
     try:
@@ -132,9 +145,9 @@ def sort_matches(matches_meanings_dict, clues):
 def print_match_and_meaning(match, meaning=None, full_meaning=False):
     print("\n", match)
     if len(meaning) == 1 and full_meaning == False:
-        print(meaning[0][:200])
+        print(meaning[:200])
     elif len(meaning) == 1 and full_meaning == True:
-        print(meaning[0])
+        print(meaning)
     else:
         print("; ".join(meaning))
     print('\n')

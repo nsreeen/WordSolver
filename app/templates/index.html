@@ -15,8 +15,8 @@
           .header {
             /*font-family: 'Roboto', sans-serif;*/
             border-bottom: 1px solid Grey;
-            margin-bottom: 20px;
-            padding-bottom: 20px;
+            margin-bottom: 30px;
+            padding-bottom: 30px;
             padding-top: 20px;
           }
           body {
@@ -25,7 +25,7 @@
             font-size: 1.8em;
           }
           .info {
-            margin-bottom: 30px;
+            margin-bottom: 10px;
             font-size: 1em;
           }
           .word-result {
@@ -61,17 +61,15 @@
     <span>Solve difficult crosswords: find words from just a few letters and get their wikipedia entry</span>
     </div>
   </div> <!-- end row and col -->
-
+<br>
 
 
 <div class="row">
 
     <div class="col-sm-3 col-sm-offset-1">
-      <div class="info">
-        <p>Enter the letters you know below.</p>
-        <p>For letters you don't know, enter '?'</p>
-        <p>For example: '?ye'</p>
-      </div>
+      <div class="info">Enter the letters you know below.</div>
+      <div class="info">For letters you don't know, enter '?'</div>
+      <div class="info">For example: '?ye'  </div>
 
       <form action="" method="post" name="word">
        {{ form.hidden_tag() }}
@@ -94,8 +92,8 @@ function getmeaning(word, shortTextBox, longTextBox, meaningLink, shortBox) {
         word: word
     }).done(function(gotmeaning) {
         console.log(gotmeaning['meaning']);
-        $(shortTextBox).text(gotmeaning['short_meaning']);
-        $(longTextBox).text(gotmeaning['long_meaning']);
+        $(shortTextBox).html(gotmeaning['short_meaning']);
+        $(longTextBox).html(gotmeaning['long_meaning']);
         $(meaningLink).text('');
         $(shortBox).css('display', 'block');
 
